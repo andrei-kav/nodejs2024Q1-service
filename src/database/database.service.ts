@@ -11,6 +11,8 @@ export class DatabaseService {
     private readonly artists: Map<string, IArtist>
     private readonly albums: Map<string, IAlbum>
 
+    private readonly favs: Map<'artists' | 'albums' | 'tracks', Array<string>>
+
     // onModuleInit() {
     //     console.log('init database')
     //     this.users = new Map<string, IUser>()
@@ -22,6 +24,11 @@ export class DatabaseService {
         this.tracks = new Map<string, ITrack>()
         this.artists = new Map<string, IArtist>()
         this.albums = new Map<string, IAlbum>()
+        this.favs = new Map<'artists' | 'albums' | 'tracks', Array<string>>([
+            ['artists', []],
+            ['albums', []],
+            ['tracks', []]
+        ])
     }
 
     /**
@@ -138,5 +145,40 @@ export class DatabaseService {
 
     getAlbumsOfArtist(artistId: string): Array<IAlbum> {
         return this.getAlbums().filter(album => album.artistId === artistId)
+    }
+
+    /**
+     * FAVORITES block
+     */
+    getFavorites(): IFavorites {
+        const favs: IFavorites = {} as IFavorites
+        Array.from(this.favs.entries()).forEach(([key, value]) => {
+            favs[key] = value
+        })
+        return favs
+    }
+
+    getFavTracks(): Array<string> {
+        return this.favs.get('tracks')
+    }
+
+    updateFavTracks(tracks: Array<string>) {
+        this.favs.set('tracks', tracks)
+    }
+
+    getFavAlbums(): Array<string> {
+        return this.favs.get('albums')
+    }
+
+    updateFavAlbums(albums: Array<string>) {
+        this.favs.set('albums', albums)
+    }
+
+    getFavArtists(): Array<string> {
+        return this.favs.get('artists')
+    }
+
+    updateFavArtists(artists: Array<string>) {
+        this.favs.set('artists', artists)
     }
 }

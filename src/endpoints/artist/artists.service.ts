@@ -50,6 +50,9 @@ export class ArtistsService {
       instance.update({artistId: null})
       this.db.updateAlbum(instance.toObj())
     })
+    // update favorites
+    const updated = this.db.getFavArtists().filter(artistId => artistId !== id)
+    this.db.updateFavArtists(updated)
   }
 
   private getArtistInfo(id: string): IArtist {

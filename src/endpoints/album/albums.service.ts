@@ -42,6 +42,9 @@ export class AlbumsService {
       instance.update({albumId: null})
       this.db.updateTrack(instance.toObj())
     })
+    // update favorites
+    const updated = this.db.getFavAlbums().filter(albumId => albumId !== id)
+    this.db.updateFavAlbums(updated)
   }
 
   private getAlbumInfo(id: string): IAlbum {
