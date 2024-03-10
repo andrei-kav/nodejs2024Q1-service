@@ -5,6 +5,7 @@ import {DatabaseService} from "../../database/database.service";
 import {IArtist} from "../../database/types/Artist";
 import {Artist} from "./entities/artist.entity";
 import {Track} from "../track/entities/track.entity";
+import {Album} from "../album/entities/album.entity";
 
 @Injectable()
 export class ArtistsService {
@@ -37,10 +38,17 @@ export class ArtistsService {
     // get the artist to be sure that it exists
     this.getArtistInfo(id)
     this.db.deleteArtist(id)
+    // update tracks
     this.db.getTracksOfArtist(id).forEach(track => {
       const instance = new Track(track)
       instance.update({artistId: null})
       this.db.updateTrack(instance.toObj())
+    })
+    // update albums
+    this.db.getAlbumsOfArtist(id).forEach(album => {
+      const instance = new Album(album)
+      instance.update({artistId: null})
+      this.db.updateAlbum(instance.toObj())
     })
   }
 
