@@ -36,6 +36,9 @@ export class TracksService {
     // get the track to be sure that it exists
     this.getTrackInfo(id)
     this.db.deleteTrack(id)
+    // update favorites
+    const updated = this.db.getFavTracks().filter(trackId => trackId !== id)
+    this.db.updateFavTracks(updated)
   }
 
   private getTrackInfo(id: string): ITrack {
