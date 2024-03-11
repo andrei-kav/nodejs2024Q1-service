@@ -24,8 +24,9 @@ export class UsersService {
     return this.db.getUsers()
   }
 
-  findOne(id: string): IUser {
-    return this.getUserInfo(id)
+  findOne(id: string): Omit<IUser, 'password'> {
+    const user = new User(this.getUserInfo(id))
+    return user.toObj(['password'])
   }
 
   update(id: string, updateUserDto: UpdateUserDto): Omit<IUser, 'password'> {

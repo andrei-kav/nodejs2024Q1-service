@@ -33,7 +33,7 @@ export class UsersController {
 
   @Get(':id')
   @Header('Content-Type', 'application/json')
-  findOne(@Param('id', ParseUUIDPipe) id: string): IUser {
+  findOne(@Param('id', ParseUUIDPipe) id: string): Omit<IUser, 'password'> {
     return this.usersService.findOne(id);
   }
 
