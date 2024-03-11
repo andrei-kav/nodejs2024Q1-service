@@ -11,6 +11,8 @@ npm install
 npm run build
 ```
 ## Running application
+Before running create the `.env` file in root folder with the info based on the `.env.example`
+
 To run in development mode
 ```
 npm run start
