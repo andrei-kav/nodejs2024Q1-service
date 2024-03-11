@@ -3,6 +3,7 @@ import {IUser} from "./types/User";
 import {ITrack} from "./types/Track";
 import {IArtist} from "./types/Artist";
 import {IAlbum} from "./types/Album";
+import {IFavorites} from "./types/Favorites";
 
 @Injectable()
 export class DatabaseService {

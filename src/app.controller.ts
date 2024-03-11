@@ -4,13 +4,10 @@ import {DatabaseService} from "./database/database.service";
 
 @Controller()
 export class AppController {
-  constructor(
-      private readonly appService: AppService,
-      private readonly ds: DatabaseService) {}
+  constructor(private readonly appService: AppService) {}
 
   @Get()
   getHello(): string {
-    console.log('users', this.ds.getUsers())
     return this.appService.getHello();
   }
 }
