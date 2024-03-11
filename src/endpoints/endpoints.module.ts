@@ -4,6 +4,7 @@ import {ArtistsModule} from "./artist/artists.module";
 import {AlbumsModule} from "./album/albums.module";
 import {TracksModule} from "./track/tracks.module";
 import {FavoritesModule} from "./favs/favorites.module";
+import {DatabaseModule} from "../database/database.module";
 
 @Module({
     imports: [
@@ -11,7 +12,8 @@ import {FavoritesModule} from "./favs/favorites.module";
         ArtistsModule,
         AlbumsModule,
         TracksModule,
-        FavoritesModule
+        FavoritesModule,
+        DatabaseModule
     ]
 })
 export class EndpointsModule {}
