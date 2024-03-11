@@ -1,4 +1,4 @@
-import {IsNotEmpty, IsNumber, IsOptional, IsString} from "class-validator";
+import {IsInt, IsNotEmpty, IsOptional, IsString} from "class-validator";
 
 export class CreateTrackDto {
     @IsNotEmpty()
@@ -6,7 +6,7 @@ export class CreateTrackDto {
     name: string
 
     @IsNotEmpty()
-    @IsNumber()
+    @IsInt()
     duration: number
 
     @IsOptional()
