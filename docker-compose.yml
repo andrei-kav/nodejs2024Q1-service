@@ -1,0 +1,17 @@
+version: '3.8'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: docker/app/Dockerfile
+    container_name: app
+    env_file:
+      - .env
+    environment:
+      - PORT=${PORT}
+    ports:
+      - ${PORT}:${PORT}
+#    depends_on:
+#      - pgdb
+#    volumes:
+#      - ./src:/opt/app/src

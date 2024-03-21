@@ -76,6 +76,10 @@ To build docker image go to root folder and run
 ```
 docker build -t {imageName}:{tag} . -f ./docker/app/Dockerfile
 ```
+then to run the image
+```
+ docker run --publish {PORT}:{PORT} {imgName}:{imgTag}
+```
 
 To build docker image (if it is need), create container and run it thereafter, go to docker folder and run
 ```
