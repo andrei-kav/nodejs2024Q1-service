@@ -67,3 +67,17 @@ npm run lint
 ```
 npm run format
 ```
+
+### Docker
+
+- Application container
+
+To build docker image go to root folder and run
+```
+docker build -t {imageName}:{tag} . -f ./docker/app/Dockerfile
+```
+
+To build docker image (if it is need), create container and run it thereafter, go to docker folder and run
+```
+docker-compose up
+```

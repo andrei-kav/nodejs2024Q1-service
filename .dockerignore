@@ -1,6 +1,2 @@
-# Ignore everything by default
-**
-
-# Whitelist docker and dist directory
-!docker/*
-!dist/*
+/dist
+/node_modules

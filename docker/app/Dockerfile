@@ -1,11 +1,14 @@
-FROM node:18
-
+FROM node:20-alpine as build
 WORKDIR /opt/app
+COPY ../../*.json .
+RUN npm ci
+COPY ../.. .
+RUN npm run build
 
-COPY ./../../package.json ./
-
-RUN npm install
-
-COPY . .
-
-CMD ["npm", "run", "start:dev"]
+FROM node:20-alpine
+WORKDIR /opt/app
+COPY --from=build /opt/app/dist ./dist
+COPY --from=build /opt/app/doc ./doc
+COPY ../../*.json .
+RUN npm ci --omit=dev
+CMD ["node", "./dist/main.js"]
