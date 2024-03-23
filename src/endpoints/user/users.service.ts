@@ -1,9 +1,9 @@
-import {Injectable, NotFoundException} from '@nestjs/common';
+import {ForbiddenException, Injectable, NotFoundException} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import {DatabaseService} from "../../database/database.service";
-import {User} from "./entities/user.entity";
-import {IUser} from "../../database/types/User";
+import {IUser, IUserPayload} from "../../database/types/User";
+import {payloadToPlain} from "./entities/user.entity";
 
 @Injectable()
 export class UsersService {
@@ -11,39 +11,45 @@ export class UsersService {
   constructor(private db: DatabaseService) {
   }
 
-  create(createUserDto: CreateUserDto): Omit<IUser, 'password'> {
-    // if (this.db.doesUserExist(createUserDto.login)) {
-    //   throw new ForbiddenException(`User ${createUserDto.login} already exists`)
-    // }
-    const newUser = User.create(createUserDto)
-    this.db.addUser(newUser.toObj())
-    return newUser.toObj(['password'])
+  async create(createUserDto: CreateUserDto): Promise<Omit<IUser, 'password'>> {
+    return payloadToPlain(await this.db.user.create({ data: createUserDto }));
   }
 
-  findAll(): Array<IUser> {
-    return this.db.getUsers()
+  async findAll(): Promise<Array<Omit<IUser, 'password'>>> {
+    return (await this.db.user.findMany()).map(payloadToPlain)
   }
 
-  findOne(id: string): Omit<IUser, 'password'> {
-    const user = new User(this.getUserInfo(id))
-    return user.toObj(['password'])
+  async findOne(id: string): Promise<Omit<IUser, 'password'>> {
+    const user = await this.db.user.findUnique({ where: { id } });
+
+    if (!user) {
+      throw new NotFoundException(`user with id ${id} does not seem to exist`)
+    }
+
+    return payloadToPlain(user)
   }
 
-  update(id: string, updateUserDto: UpdateUserDto): Omit<IUser, 'password'> {
-    const user = new User(this.getUserInfo(id))
-    user.update(updateUserDto)
-    this.db.updateUser(user.toObj())
-    return user.toObj(['password'])
+  async update(id: string, updateUserDto: UpdateUserDto): Promise<Omit<IUser, 'password'>> {
+    const user = await this.getUserInfo(id)
+
+    if (user.password !== updateUserDto.oldPassword) {
+      throw new ForbiddenException(`old password is wrong`)
+    }
+
+    return payloadToPlain(await this.db.user.update({
+      where: { id },
+      data: { password: updateUserDto.newPassword, version: user.version + 1 }
+    }));
   }
 
-  remove(id: string) {
+  async remove(id: string) {
     // get the user to be sure that it exists
-    this.getUserInfo(id)
-    this.db.deleteUser(id)
+    await this.getUserInfo(id)
+    await this.db.user.delete({ where: { id } })
   }
 
-  private getUserInfo(id: string): IUser {
-    const user = this.db.getUser(id)
+  private async getUserInfo(id: string): Promise<IUserPayload> {
+    const user = await this.db.user.findUnique({ where: { id } });
     if (!user) {
       throw new NotFoundException(`user with id ${id} does not seem to exist`)
     }
