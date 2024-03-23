@@ -22,35 +22,35 @@ export class AlbumsController {
   @UsePipes(new ValidationPipe())
   @Post()
   @Header('Content-Type', 'application/json')
-  create(@Body() createAlbumDto: CreateAlbumDto): IAlbum {
-    return this.albumsService.create(createAlbumDto);
+  async create(@Body() createAlbumDto: CreateAlbumDto): Promise<IAlbum> {
+    return await this.albumsService.create(createAlbumDto);
   }
 
   @Get()
   @Header('Content-Type', 'application/json')
-  findAll(): Array<IAlbum> {
-    return this.albumsService.findAll();
+  async findAll(): Promise<Array<IAlbum>> {
+    return await this.albumsService.findAll();
   }
 
   @Get(':id')
   @Header('Content-Type', 'application/json')
-  findOne(@Param('id', ParseUUIDPipe) id: string): IAlbum {
-    return this.albumsService.findOne(id);
+  async findOne(@Param('id', ParseUUIDPipe) id: string): Promise<IAlbum> {
+    return await this.albumsService.findOne(id);
   }
 
   @UsePipes(new ValidationPipe())
   @Put(':id')
   @Header('Content-Type', 'application/json')
-  update(
+  async update(
       @Param('id', ParseUUIDPipe) id: string,
       @Body() updateAlbumDto: UpdateAlbumDto
-  ): IAlbum {
-    return this.albumsService.update(id, updateAlbumDto);
+  ): Promise<IAlbum> {
+    return await this.albumsService.update(id, updateAlbumDto);
   }
 
   @Delete(':id')
   @HttpCode(204)
-  remove(@Param('id', ParseUUIDPipe) id: string) {
-    return this.albumsService.remove(id);
+  async remove(@Param('id', ParseUUIDPipe) id: string) {
+    return await this.albumsService.remove(id);
   }
 }
