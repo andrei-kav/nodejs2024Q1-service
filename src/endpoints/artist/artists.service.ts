@@ -3,9 +3,6 @@ import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
 import {DatabaseService} from "../../database/database.service";
 import {IArtist} from "../../database/types/Artist";
-import {Artist} from "./entities/artist.entity";
-import {Track} from "../track/entities/track.entity";
-import {Album} from "../album/entities/album.entity";
 
 @Injectable()
 export class ArtistsService {
@@ -13,50 +10,33 @@ export class ArtistsService {
   constructor(private db: DatabaseService) {
   }
 
-  create(createArtistDto: CreateArtistDto): IArtist {
-    const artis = Artist.create(createArtistDto)
-    this.db.addArtist(artis.toObj())
-    return artis.toObj()
+  async create(createArtistDto: CreateArtistDto): Promise<IArtist> {
+    return await this.db.artist.create({ data: createArtistDto });
   }
 
-  findAll(): Array<IArtist> {
-    return this.db.getArtists()
+  async findAll(): Promise<Array<IArtist>> {
+    return await this.db.artist.findMany()
   }
 
-  findOne(id: string): IArtist {
-    return this.getArtistInfo(id)
+  async findOne(id: string): Promise<IArtist> {
+    return await this.getArtistInfo(id)
   }
 
-  update(id: string, updateArtistDto: UpdateArtistDto): IArtist {
-    const artist = new Artist(this.getArtistInfo(id))
-    artist.update(updateArtistDto)
-    this.db.updateArtist(artist.toObj())
-    return artist.toObj()
-  }
-
-  remove(id: string) {
-    // get the artist to be sure that it exists
-    this.getArtistInfo(id)
-    this.db.deleteArtist(id)
-    // update tracks
-    this.db.getTracksOfArtist(id).forEach(track => {
-      const instance = new Track(track)
-      instance.update({artistId: null})
-      this.db.updateTrack(instance.toObj())
+  async update(id: string, updateArtistDto: UpdateArtistDto): Promise<IArtist> {
+    await this.getArtistInfo(id)
+    return await this.db.artist.update({
+      where: { id },
+      data: updateArtistDto
     })
-    // update albums
-    this.db.getAlbumsOfArtist(id).forEach(album => {
-      const instance = new Album(album)
-      instance.update({artistId: null})
-      this.db.updateAlbum(instance.toObj())
-    })
-    // update favorites
-    const updated = this.db.getFavArtists().filter(artistId => artistId !== id)
-    this.db.updateFavArtists(updated)
   }
 
-  private getArtistInfo(id: string): IArtist {
-    const artist = this.db.getArtist(id)
+  async remove(id: string) {
+    await this.getArtistInfo(id)
+    await this.db.artist.delete({ where: { id } })
+  }
+
+  private async getArtistInfo(id: string): Promise<IArtist> {
+    const artist = await this.db.artist.findUnique({ where: { id } })
     if (!artist) {
       throw new NotFoundException(`artist with id ${id} does not seem to exist`)
     }
