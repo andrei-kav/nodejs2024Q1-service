@@ -6,3 +6,12 @@ export interface IUser {
     createdAt: number; // timestamp of creation
     updatedAt: number; // timestamp of last update
 }
+
+export interface IUserPayload {
+    id: string
+    login: string
+    password: string
+    version: number
+    createdAt: Date
+    updatedAt: Date
+}
