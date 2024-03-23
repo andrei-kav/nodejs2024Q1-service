@@ -17,25 +17,25 @@ export class FavoritesController {
 
   @Get()
   @Header('Content-Type', 'application/json')
-  findAll(): IFavoritesResponse {
-    return this.favoritesService.findAll();
+  async findAll(): Promise<IFavoritesResponse> {
+    return await this.favoritesService.findAll();
   }
 
   @Post(':entity/:id')
   @Header('Content-Type', 'application/json')
-  add(
+  async add(
       @Param('entity', new ParseEnumPipe(EntityType)) entity: EntityType,
       @Param('id', ParseUUIDPipe) id: string
   ) {
-    this.favoritesService.add(entity, id)
+    await this.favoritesService.add(entity, id)
   }
 
   @Delete(':entity/:id')
   @HttpCode(204)
-  remove(
+  async remove(
       @Param('entity', new ParseEnumPipe(EntityType)) entity: EntityType,
       @Param('id', ParseUUIDPipe) id: string
   ) {
-    this.favoritesService.remove(entity, id)
+    await this.favoritesService.remove(entity, id)
   }
 }
