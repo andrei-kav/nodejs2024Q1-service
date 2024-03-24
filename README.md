@@ -12,7 +12,7 @@ npm install
   `PSQL_USER` may be random (f.i. `admin`)
   `PSQL_PASSWORD` may be random (f.i. `admin`)
 * run `npm run docker:compose:prod:up` to run API
-* run `npm run docker:compose:prod:down` to clean up containers
+* run `npm run docker:compose:prod:down` to clean up containers and volumes
 
 # Other cases of running
 
@@ -22,7 +22,7 @@ npm install
   `PSQL_USER` may be random (f.i. `admin`)
   `PSQL_PASSWORD` may be random (f.i. `admin`)
 * run `npm run docker:compose:dev:up` to run API
-* run `npm run docker:compose:dev:down` to clean up containers
+* run `npm run docker:compose:dev:down` to clean up containers and volumes
 
 ## Running API using IMAGES (api and DB are in images uploaded to docker hub)
 * Create the `.env` file in root folder with the info based on the `.env.example`
@@ -30,7 +30,7 @@ npm install
   `PSQL_USER` may be random (f.i. `admin`)
   `PSQL_PASSWORD` may be random (f.i. `admin`)
 * run `npm run docker:compose:images:up` to run API
-* run `npm run docker:compose:images:down` to clean up containers
+* run `npm run docker:compose:images:down` to clean up containers and volumes
 
 ## Running API from scratch (database image will be created from scratch)
 * Create the `.env` file in root folder with the info based on the `.env.example`
@@ -38,7 +38,7 @@ npm install
   `PSQL_USER` may be random (f.i. `admin`)
   `PSQL_PASSWORD` may be random (f.i. `admin`)
 * run `npm run docker:compose:scratch:up` to run API
-* run `npm run docker:compose:scratch:down` to clean up containers
+* run `npm run docker:compose:scratch:down` to clean up containers and volumes
 
 ## Running API LOCALLY
 * Make sure you have postgres installed locally and postgres server is running
