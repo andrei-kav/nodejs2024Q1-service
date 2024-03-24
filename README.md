@@ -63,6 +63,12 @@ npm run build && npm run start:prod
 * application is running on the PORT from `.env` file (4000 by default)
 
 
+## Scan vulnerabilities
+Make sure you have docker scout plugin installed: https://docs.docker.com/scout/install/
+* run `npm run docker:scout:api` to scan api image uploaded to docker hub
+* run `npm run docker:scout:db` to scan database image uploaded to docker hub
+* run `npm run docker:scout` to scan both images
+
 After starting the app on port (4000 as default) you can open
 in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
 
