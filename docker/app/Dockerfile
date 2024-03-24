@@ -1,21 +1,22 @@
-#FROM node:20-alpine as build
-#WORKDIR /opt/app
-#COPY ../../*.json .
-#RUN npm ci
-#COPY ../.. .
-#RUN npm run build
-#
-#FROM node:20-alpine
-#WORKDIR /opt/app
-#COPY --from=build /opt/app/dist ./dist
-#COPY --from=build /opt/app/doc ./doc
-#COPY ../../*.json .
-#RUN npm ci --omit=dev
-#CMD ["node", "./dist/main.js"]
-
-FROM node:20-alpine
+FROM node:20-alpine as start
 WORKDIR /opt/app
 COPY ../../*.json .
+COPY ../../prisma ./prisma
+
+FROM start as build
 RUN npm install
-COPY ../../ .
-CMD ["npm", "run", "start"]
+COPY ../.. .
+RUN npm run build
+
+FROM node:20-alpine as prod
+COPY --from=build /opt/app/dist ./dist
+COPY --from=build /opt/app/doc ./doc
+COPY --from=build /opt/app/prisma ./prisma
+COPY --from=build /opt/app/node_modules ./node_modules
+COPY ../../*.json .
+CMD ["npm", "run", "start:migrate:prod"]
+
+FROM start as dev
+RUN npm install
+COPY ../../doc ./doc
+CMD ["npm", "run", "start:migrate:dev"]

@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: docker/app/Dockerfile
+      target: prod
+    container_name: api_container
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - ${PORT}:${PORT}
+    depends_on:
+      pg_db:
+        condition: service_started
+    volumes:
+      - ./src:/opt/app/src
+    networks:
+      - mus_lib
+
+  pg_db:
+    build:
+      context: .
+      dockerfile: docker/postgres/Dockerfile
+    container_name: db_container
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_USER=${PSQL_USER}
+      - POSTGRES_PASSWORD=${PSQL_PASSWORD}
+      - POSTGRES_HOST=${PSQL_HOST}
+      - POSTGRES_PORT=${PSQL_PORT}
+      - POSTGRES_DB=${PSQL_DB}
+    ports:
+      - ${PSQL_PORT}:${PSQL_PORT}
+    networks:
+      - mus_lib
+    volumes:
+      - psql_data:/var/lib/postgresql/data
+      - psql_logs:/var/log/postgresql
+
+  pg_admin:
+    container_name: pgadmin_container
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@mail.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    env_file:
+      - .env
+    ports:
+      - ${PG_ADMIN_HOST}:${PG_ADMIN_PORT}
+    networks:
+      - mus_lib
+    depends_on:
+      pg_db:
+        condition: service_started
+
+volumes:
+  psql_data:
+  psql_logs:
+
+networks:
+  mus_lib:
+    name: ${NETWORK}
+    driver: ${DRIVER}

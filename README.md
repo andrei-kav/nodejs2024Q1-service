@@ -6,25 +6,61 @@
 npm install
 ```
 
-## Building application
-```
-npm run build
-```
-## Running application
-Before running create the `.env` file in root folder with the info based on the `.env.example`
+## Running API (production mode)
+* Create the `.env` file in root folder with the info based on the `.env.example`
+  provide `PSQL_HOST` with the value `db_container` (PSQL_HOST="db_container"). `db_container` is the container name when database will be running
+  `PSQL_USER` may be random (f.i. `admin`)
+  `PSQL_PASSWORD` may be random (f.i. `admin`)
+* run `npm run docker:compose:prod:up` to run API
+* run `npm run docker:compose:prod:down` to clean up containers
 
-To run in development mode
+# Other cases of running
+
+## Running API in development mode
+* Create the `.env` file in root folder with the info based on the `.env.example`
+  provide `PSQL_HOST` with the value `db_container` (PSQL_HOST="db_container"). `db_container` is the container name when database will be running
+  `PSQL_USER` may be random (f.i. `admin`)
+  `PSQL_PASSWORD` may be random (f.i. `admin`)
+* run `npm run docker:compose:dev:up` to run API
+* run `npm run docker:compose:dev:down` to clean up containers
+
+## Running API using IMAGES (api and DB are in images uploaded to docker hub)
+* Create the `.env` file in root folder with the info based on the `.env.example`
+  provide `PSQL_HOST` with the value `db_container` (PSQL_HOST="db_container"). `db_container` is the container name when database will be running
+  `PSQL_USER` may be random (f.i. `admin`)
+  `PSQL_PASSWORD` may be random (f.i. `admin`)
+* run `npm run docker:compose:images:up` to run API
+* run `npm run docker:compose:images:down` to clean up containers
+
+## Running API from scratch (database image will be created from scratch)
+* Create the `.env` file in root folder with the info based on the `.env.example`
+  provide `PSQL_HOST` with the value `db_container` (PSQL_HOST="db_container"). `db_container` is the container name when database will be running
+  `PSQL_USER` may be random (f.i. `admin`)
+  `PSQL_PASSWORD` may be random (f.i. `admin`)
+* run `npm run docker:compose:scratch:up` to run API
+* run `npm run docker:compose:scratch:down` to clean up containers
+
+## Running API LOCALLY
+* Make sure you have postgres installed locally and postgres server is running
+* Create the `.env` file in root folder with the info based on the `.env.example`
+  provide `PSQL_HOST` with the value `localhost` (PSQL_HOST="localhost")
+  provide `PSQL_USER` with your postgres user (f.i. PSQL_USER="postgres")
+  provide `PSQL_PASSWORD` with your postgres user password (f.i. PSQL_PASSWORD="root")
+* run `npx prisma migrate dev --name init` to create a database
+* then run either
+development mode
 ```
 npm run start
 ```
-To run in development --watch mode
+development --watch mode
 ```
 npm run start:dev
 ```
-To run in production mode
+production mode
 ```
-npm run start:prod
+npm run build && npm run start:prod
 ```
+* application is running on the PORT from `.env` file (4000 by default)
 
 
 After starting the app on port (4000 as default) you can open
@@ -76,12 +112,53 @@ To build docker image go to root folder and run
 ```
 docker build -t {imageName}:{tag} . -f ./docker/app/Dockerfile
 ```
-then to run the image
+then to run the image (container will be created automatically)
 ```
  docker run --publish {PORT}:{PORT} {imgName}:{imgTag}
 ```
+only create a container
+```
+docker create --name={containerName} {imgName}:{imgTag}
+```
+create a zip from a container
+```
+docker export {containerName} > zipName.tar
+```
 
-To build docker image (if it is need), create container and run it thereafter, go to docker folder and run
+### Docker-compose
+To build docker image run
+```
+docker-compose build
+```
+To build docker image (if it is need), create container and run it thereafter, in root folder run
 ```
 docker-compose up
+```
+To clean docker containers run 
+```
+docker-compose down
+```
+To clean docker containers and volumes run 
+```
+docker-compose down --volumes
+```
+
+### Docker push
+First login into docker hub
+```
+docker login
+```
+Then you have to create a tagged version of the required image
+```
+docker tag {image_name}:{tag} {docker_hub_ID}/{image_name}:{new_tag}
+```
+Push the tagged image you just created
+```
+docker push {docker_hub_ID}/{image_name}:{new_tag}
+```
+
+### Prisma
+run to migrate db 
+```
+npx prisma migrate dev --name init
 ```
