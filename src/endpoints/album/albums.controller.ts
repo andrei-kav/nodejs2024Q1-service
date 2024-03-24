@@ -8,12 +8,14 @@ import {
   Header,
   ParseUUIDPipe,
   UsePipes,
-  ValidationPipe, Put, HttpCode
+  ValidationPipe,
+  Put,
+  HttpCode,
 } from '@nestjs/common';
 import { AlbumsService } from './albums.service';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
-import {IAlbum} from "../../database/types/Album";
+import { IAlbum } from '../../database/types/Album';
 
 @Controller('album')
 export class AlbumsController {
@@ -42,8 +44,8 @@ export class AlbumsController {
   @Put(':id')
   @Header('Content-Type', 'application/json')
   async update(
-      @Param('id', ParseUUIDPipe) id: string,
-      @Body() updateAlbumDto: UpdateAlbumDto
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateAlbumDto: UpdateAlbumDto,
   ): Promise<IAlbum> {
     return await this.albumsService.update(id, updateAlbumDto);
   }

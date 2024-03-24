@@ -7,9 +7,13 @@ import {
   Header,
   ParseUUIDPipe,
   HttpCode,
-  ParseEnumPipe
+  ParseEnumPipe,
 } from '@nestjs/common';
-import {EntityType, FavoritesService, IFavoritesResponse} from './favorites.service';
+import {
+  EntityType,
+  FavoritesService,
+  IFavoritesResponse,
+} from './favorites.service';
 
 @Controller('favs')
 export class FavoritesController {
@@ -24,18 +28,18 @@ export class FavoritesController {
   @Post(':entity/:id')
   @Header('Content-Type', 'application/json')
   async add(
-      @Param('entity', new ParseEnumPipe(EntityType)) entity: EntityType,
-      @Param('id', ParseUUIDPipe) id: string
+    @Param('entity', new ParseEnumPipe(EntityType)) entity: EntityType,
+    @Param('id', ParseUUIDPipe) id: string,
   ) {
-    await this.favoritesService.add(entity, id)
+    await this.favoritesService.add(entity, id);
   }
 
   @Delete(':entity/:id')
   @HttpCode(204)
   async remove(
-      @Param('entity', new ParseEnumPipe(EntityType)) entity: EntityType,
-      @Param('id', ParseUUIDPipe) id: string
+    @Param('entity', new ParseEnumPipe(EntityType)) entity: EntityType,
+    @Param('id', ParseUUIDPipe) id: string,
   ) {
-    await this.favoritesService.remove(entity, id)
+    await this.favoritesService.remove(entity, id);
   }
 }

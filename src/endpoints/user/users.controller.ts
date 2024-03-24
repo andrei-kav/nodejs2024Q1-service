@@ -7,12 +7,15 @@ import {
   Delete,
   UsePipes,
   ValidationPipe,
-  ParseUUIDPipe, Header, Put, HttpCode
+  ParseUUIDPipe,
+  Header,
+  Put,
+  HttpCode,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import {IUser} from "../../database/types/User";
+import { IUser } from '../../database/types/User';
 
 @Controller('user')
 export class UsersController {
@@ -21,7 +24,9 @@ export class UsersController {
   @UsePipes(new ValidationPipe())
   @Post()
   @Header('Content-Type', 'application/json')
-  async create(@Body() createUserDto: CreateUserDto): Promise<Omit<IUser, 'password'>> {
+  async create(
+    @Body() createUserDto: CreateUserDto,
+  ): Promise<Omit<IUser, 'password'>> {
     return await this.usersService.create(createUserDto);
   }
 
@@ -33,7 +38,9 @@ export class UsersController {
 
   @Get(':id')
   @Header('Content-Type', 'application/json')
-  async findOne(@Param('id', ParseUUIDPipe) id: string): Promise<Omit<IUser, 'password'>> {
+  async findOne(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<Omit<IUser, 'password'>> {
     return await this.usersService.findOne(id);
   }
 
@@ -41,8 +48,8 @@ export class UsersController {
   @Put(':id')
   @Header('Content-Type', 'application/json')
   async update(
-      @Param('id', ParseUUIDPipe) id: string,
-      @Body() updateUserDto: UpdateUserDto
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateUserDto: UpdateUserDto,
   ): Promise<Omit<IUser, 'password'>> {
     return await this.usersService.update(id, updateUserDto);
   }

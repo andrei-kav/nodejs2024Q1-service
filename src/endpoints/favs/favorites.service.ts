@@ -1,13 +1,13 @@
-import {Injectable, UnprocessableEntityException} from '@nestjs/common';
-import {DatabaseService} from "../../database/database.service";
-import {IArtist} from "../../database/types/Artist";
-import {IAlbum} from "../../database/types/Album";
-import {ITrack} from "../../database/types/Track";
+import { Injectable, UnprocessableEntityException } from '@nestjs/common';
+import { DatabaseService } from '../../database/database.service';
+import { IArtist } from '../../database/types/Artist';
+import { IAlbum } from '../../database/types/Album';
+import { ITrack } from '../../database/types/Track';
 
 export enum EntityType {
   TRACK = 'track',
   ALBUM = 'album',
-  ARTIST = 'artist'
+  ARTIST = 'artist',
 }
 
 export interface IFavoritesResponse {
@@ -18,39 +18,37 @@ export interface IFavoritesResponse {
 
 @Injectable()
 export class FavoritesService {
-
-  constructor(private db: DatabaseService) {
-  }
+  constructor(private db: DatabaseService) {}
 
   async findAll(): Promise<IFavoritesResponse> {
     const fav = await this.db.favorites.findFirst({
-      select: { artists: true, albums: true, tracks: true }
-    })
+      select: { artists: true, albums: true, tracks: true },
+    });
     if (!fav) {
-      return { artists: [], albums: [], tracks: [] }
+      return { artists: [], albums: [], tracks: [] };
     }
-    return fav
+    return fav;
   }
 
   async add(entity: EntityType, id: string) {
     switch (entity) {
       case EntityType.TRACK:
-        return await this.addTrackToFav(id)
+        return await this.addTrackToFav(id);
       case EntityType.ALBUM:
-        return await this.addAlbumToFav(id)
+        return await this.addAlbumToFav(id);
       case EntityType.ARTIST:
-        return await this.addArtistToFav(id)
+        return await this.addArtistToFav(id);
     }
   }
 
   async remove(entity: EntityType, id: string) {
     switch (entity) {
       case EntityType.TRACK:
-        return await this.removeTrackFromFav(id)
+        return await this.removeTrackFromFav(id);
       case EntityType.ALBUM:
-        return await this.removeAlbumFromFav(id)
+        return await this.removeAlbumFromFav(id);
       case EntityType.ARTIST:
-        return await this.removeArtistFromFav(id)
+        return await this.removeArtistFromFav(id);
     }
   }
 
@@ -58,22 +56,24 @@ export class FavoritesService {
    * TRACKS
    */
   private async addTrackToFav(id: string) {
-    const track = await this.db.track.findUnique({ where: { id }})
+    const track = await this.db.track.findUnique({ where: { id } });
     if (!track) {
-      throw new UnprocessableEntityException(`track with id ${id} does not seem to exist`)
+      throw new UnprocessableEntityException(
+        `track with id ${id} does not seem to exist`,
+      );
     }
-    const favId = await this.getFavID()
+    const favId = await this.getFavID();
     await this.db.favorites.update({
       where: { id: favId },
-      data: { tracks: { connect: { id } } }
+      data: { tracks: { connect: { id } } },
     });
   }
 
   private async removeTrackFromFav(id: string) {
-    const favId = await this.getFavID()
+    const favId = await this.getFavID();
     await this.db.favorites.update({
       where: { id: favId },
-      data: { tracks: { disconnect: { id } } }
+      data: { tracks: { disconnect: { id } } },
     });
   }
 
@@ -81,22 +81,24 @@ export class FavoritesService {
    * ALBUMS
    */
   private async addAlbumToFav(id: string) {
-    const album = await this.db.album.findUnique({ where: { id }})
+    const album = await this.db.album.findUnique({ where: { id } });
     if (!album) {
-      throw new UnprocessableEntityException(`album with id ${id} does not seem to exist`)
+      throw new UnprocessableEntityException(
+        `album with id ${id} does not seem to exist`,
+      );
     }
-    const favId = await this.getFavID()
+    const favId = await this.getFavID();
     await this.db.favorites.update({
       where: { id: favId },
-      data: { albums: { connect: { id } } }
+      data: { albums: { connect: { id } } },
     });
   }
 
   private async removeAlbumFromFav(id: string) {
-    const favId = await this.getFavID()
+    const favId = await this.getFavID();
     await this.db.favorites.update({
       where: { id: favId },
-      data: { albums: { disconnect: { id } } }
+      data: { albums: { disconnect: { id } } },
     });
   }
 
@@ -104,22 +106,24 @@ export class FavoritesService {
    * ARTISTS
    */
   private async addArtistToFav(id: string) {
-    const artist = await this.db.artist.findUnique({ where: { id }})
+    const artist = await this.db.artist.findUnique({ where: { id } });
     if (!artist) {
-      throw new UnprocessableEntityException(`artist with id ${id} does not seem to exist`)
+      throw new UnprocessableEntityException(
+        `artist with id ${id} does not seem to exist`,
+      );
     }
-    const favId = await this.getFavID()
+    const favId = await this.getFavID();
     await this.db.favorites.update({
       where: { id: favId },
-      data: { artists: { connect: { id } } }
+      data: { artists: { connect: { id } } },
     });
   }
 
   private async removeArtistFromFav(id: string) {
-    const favId = await this.getFavID()
+    const favId = await this.getFavID();
     await this.db.favorites.update({
       where: { id: favId },
-      data: { artists: { disconnect: { id } } }
+      data: { artists: { disconnect: { id } } },
     });
   }
 
@@ -127,8 +131,8 @@ export class FavoritesService {
     const fav = await this.db.favorites.findFirst();
     if (!fav) {
       const created = await this.db.favorites.create({ data: {} });
-      return created.id
+      return created.id;
     }
-    return fav.id
+    return fav.id;
   }
 }
