@@ -6,17 +6,8 @@
 npm install
 ```
 
-## Running API (production mode)
-* Create the `.env` file in root folder with the info based on the `.env.example`
-  provide `PSQL_HOST` with the value `db_container` (PSQL_HOST="db_container"). `db_container` is the container name when database will be running
-  `PSQL_USER` may be random (f.i. `admin`)
-  `PSQL_PASSWORD` may be random (f.i. `admin`)
-* run `npm run docker:compose:prod:up` to run API
-* run `npm run docker:compose:prod:down` to clean up containers and volumes
-
-# Other cases of running
-
 ## Running API in development mode
+* Default `POSTGRESQL_PORT` is 5432. Before running make sure this port is free on your machine
 * Create the `.env` file in root folder with the info based on the `.env.example`
   provide `PSQL_HOST` with the value `db_container` (PSQL_HOST="db_container"). `db_container` is the container name when database will be running
   `PSQL_USER` may be random (f.i. `admin`)
@@ -24,7 +15,21 @@ npm install
 * run `npm run docker:compose:dev:up` to run API
 * run `npm run docker:compose:dev:down` to clean up containers and volumes
 
+
+
+# Other cases of running
+
+## Running API (production mode)
+* Default `POSTGRESQL_PORT` is 5432. Before running make sure this port is free on your machine
+* Create the `.env` file in root folder with the info based on the `.env.example`
+  provide `PSQL_HOST` with the value `db_container` (PSQL_HOST="db_container"). `db_container` is the container name when database will be running
+  `PSQL_USER` may be random (f.i. `admin`)
+  `PSQL_PASSWORD` may be random (f.i. `admin`)
+* run `npm run docker:compose:prod:up` to run API
+* run `npm run docker:compose:prod:down` to clean up containers and volumes
+
 ## Running API using IMAGES (api and DB are in images uploaded to docker hub)
+* Default `POSTGRESQL_PORT` is 5432. Before running make sure this port is free on your machine
 * Create the `.env` file in root folder with the info based on the `.env.example`
   provide `PSQL_HOST` with the value `db_container` (PSQL_HOST="db_container"). `db_container` is the container name when database will be running
   `PSQL_USER` may be random (f.i. `admin`)
@@ -33,6 +38,7 @@ npm install
 * run `npm run docker:compose:images:down` to clean up containers and volumes
 
 ## Running API from scratch (database image will be created from scratch)
+* Default `POSTGRESQL_PORT` is 5432. Before running make sure this port is free on your machine
 * Create the `.env` file in root folder with the info based on the `.env.example`
   provide `PSQL_HOST` with the value `db_container` (PSQL_HOST="db_container"). `db_container` is the container name when database will be running
   `PSQL_USER` may be random (f.i. `admin`)
@@ -69,6 +75,7 @@ Make sure you have docker scout plugin installed: https://docs.docker.com/scout/
 * run `npm run docker:scout:db` to scan database image uploaded to docker hub
 * run `npm run docker:scout` to scan both images
 
+## OpenAPI documentation
 After starting the app on port (4000 as default) you can open
 in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
 
