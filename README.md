@@ -7,7 +7,7 @@ npm install
 ```
 
 ## Running API in development mode
-* Default `POSTGRESQL_PORT` is 5432. Before running make sure this port is free on your machine
+* Default postgres `PSQL_PORT` is `5432`. Before running make sure this port is free on your machine. If you have local postgres server running on this PORT, stop it
 * Create the `.env` file in root folder with the info based on the `.env.example`
   provide `PSQL_HOST` with the value `db_container` (PSQL_HOST="db_container"). `db_container` is the container name when database will be running
   `PSQL_USER` may be random (f.i. `admin`)
@@ -20,7 +20,7 @@ npm install
 # Other cases of running
 
 ## Running API (production mode)
-* Default `POSTGRESQL_PORT` is 5432. Before running make sure this port is free on your machine
+* Default postgres `PSQL_PORT` is `5432`. Before running make sure this port is free on your machine. If you have local postgres server running on this PORT, stop it
 * Create the `.env` file in root folder with the info based on the `.env.example`
   provide `PSQL_HOST` with the value `db_container` (PSQL_HOST="db_container"). `db_container` is the container name when database will be running
   `PSQL_USER` may be random (f.i. `admin`)
@@ -29,7 +29,7 @@ npm install
 * run `npm run docker:compose:prod:down` to clean up containers and volumes
 
 ## Running API using IMAGES (api and DB are in images uploaded to docker hub)
-* Default `POSTGRESQL_PORT` is 5432. Before running make sure this port is free on your machine
+* Default postgres `PSQL_PORT` is `5432`. Before running make sure this port is free on your machine. If you have local postgres server running on this PORT, stop it
 * Create the `.env` file in root folder with the info based on the `.env.example`
   provide `PSQL_HOST` with the value `db_container` (PSQL_HOST="db_container"). `db_container` is the container name when database will be running
   `PSQL_USER` may be random (f.i. `admin`)
@@ -38,7 +38,7 @@ npm install
 * run `npm run docker:compose:images:down` to clean up containers and volumes
 
 ## Running API from scratch (database image will be created from scratch)
-* Default `POSTGRESQL_PORT` is 5432. Before running make sure this port is free on your machine
+* Default postgres `PSQL_PORT` is `5432`. Before running make sure this port is free on your machine. If you have local postgres server running on this PORT, stop it
 * Create the `.env` file in root folder with the info based on the `.env.example`
   provide `PSQL_HOST` with the value `db_container` (PSQL_HOST="db_container"). `db_container` is the container name when database will be running
   `PSQL_USER` may be random (f.i. `admin`)
