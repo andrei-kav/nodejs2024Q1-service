@@ -1,51 +1,45 @@
-import {Injectable, NotFoundException} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
-import {DatabaseService} from "../../database/database.service";
-import {ITrack} from "../../database/types/Track";
-import {Track} from "./entities/track.entity";
+import { DatabaseService } from '../../database/database.service';
+import { ITrack } from '../../database/types/Track';
 
 @Injectable()
 export class TracksService {
+  constructor(private db: DatabaseService) {}
 
-  constructor(private db: DatabaseService) {
+  async create(createTrackDto: CreateTrackDto): Promise<ITrack> {
+    return await this.db.track.create({
+      data: createTrackDto,
+    });
   }
 
-  create(createTrackDto: CreateTrackDto): ITrack {
-    const newTrack = Track.create(createTrackDto)
-    this.db.addTrack(newTrack.toObj())
-    return newTrack.toObj()
+  async findAll(): Promise<Array<ITrack>> {
+    return await this.db.track.findMany();
   }
 
-  findAll(): Array<ITrack> {
-    return this.db.getTracks()
+  async findOne(id: string): Promise<ITrack> {
+    return await this.getTrackInfo(id);
   }
 
-  findOne(id: string): ITrack {
-    return this.getTrackInfo(id)
+  async update(id: string, updateTrackDto: UpdateTrackDto): Promise<ITrack> {
+    await this.getTrackInfo(id);
+    return await this.db.track.update({
+      where: { id },
+      data: updateTrackDto,
+    });
   }
 
-  update(id: string, updateTrackDto: UpdateTrackDto): ITrack {
-    const track = new Track(this.getTrackInfo(id))
-    track.update(updateTrackDto)
-    this.db.updateTrack(track.toObj())
-    return track.toObj()
+  async remove(id: string) {
+    await this.getTrackInfo(id);
+    await this.db.track.delete({ where: { id } });
   }
 
-  remove(id: string) {
-    // get the track to be sure that it exists
-    this.getTrackInfo(id)
-    this.db.deleteTrack(id)
-    // update favorites
-    const updated = this.db.getFavTracks().filter(trackId => trackId !== id)
-    this.db.updateFavTracks(updated)
-  }
-
-  private getTrackInfo(id: string): ITrack {
-    const track = this.db.getTrack(id)
-    if (!track) {
-      throw new NotFoundException(`track with id ${id} does not seem to exist`)
+  private async getTrackInfo(id: string): Promise<ITrack> {
+    const user = await this.db.track.findUnique({ where: { id } });
+    if (!user) {
+      throw new NotFoundException(`track with id ${id} does not seem to exist`);
     }
-    return track
+    return user;
   }
 }

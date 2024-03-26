@@ -1,57 +1,43 @@
-import {Injectable, NotFoundException} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
-import {IAlbum} from "../../database/types/Album";
-import {DatabaseService} from "../../database/database.service";
-import {Album} from "./entities/album.entity";
-import {Track} from "../track/entities/track.entity";
+import { IAlbum } from '../../database/types/Album';
+import { DatabaseService } from '../../database/database.service';
 
 @Injectable()
 export class AlbumsService {
+  constructor(private db: DatabaseService) {}
 
-  constructor(private db: DatabaseService) {
+  async create(createAlbumDto: CreateAlbumDto): Promise<IAlbum> {
+    return await this.db.album.create({ data: createAlbumDto });
   }
 
-  create(createAlbumDto: CreateAlbumDto): IAlbum {
-    const album = Album.create(createAlbumDto)
-    this.db.addAlbum(album.toObj())
-    return album.toObj()
+  async findAll(): Promise<Array<IAlbum>> {
+    return this.db.album.findMany();
   }
 
-  findAll(): Array<IAlbum> {
-    return this.db.getAlbums()
+  async findOne(id: string): Promise<IAlbum> {
+    return await this.getAlbumInfo(id);
   }
 
-  findOne(id: string): IAlbum {
-    return this.getAlbumInfo(id)
+  async update(id: string, updateAlbumDto: UpdateAlbumDto): Promise<IAlbum> {
+    await this.getAlbumInfo(id);
+    return this.db.album.update({
+      where: { id },
+      data: updateAlbumDto,
+    });
   }
 
-  update(id: string, updateAlbumDto: UpdateAlbumDto) {
-    const album = new Album(this.getAlbumInfo(id))
-    album.update(updateAlbumDto)
-    this.db.updateAlbum(album.toObj())
-    return album.toObj()
+  async remove(id: string) {
+    await this.getAlbumInfo(id);
+    await this.db.album.delete({ where: { id } });
   }
 
-  remove(id: string) {
-    // get the album to be sure that it exists
-    this.getAlbumInfo(id)
-    this.db.deleteAlbum(id)
-    this.db.getTracksOfAlbum(id).forEach(track => {
-      const instance = new Track(track)
-      instance.update({albumId: null})
-      this.db.updateTrack(instance.toObj())
-    })
-    // update favorites
-    const updated = this.db.getFavAlbums().filter(albumId => albumId !== id)
-    this.db.updateFavAlbums(updated)
-  }
-
-  private getAlbumInfo(id: string): IAlbum {
-    const album = this.db.getAlbum(id)
+  private async getAlbumInfo(id: string): Promise<IAlbum> {
+    const album = await this.db.album.findUnique({ where: { id } });
     if (!album) {
-      throw new NotFoundException(`album with id ${id} does not seem to exist`)
+      throw new NotFoundException(`album with id ${id} does not seem to exist`);
     }
-    return album
+    return album;
   }
 }
