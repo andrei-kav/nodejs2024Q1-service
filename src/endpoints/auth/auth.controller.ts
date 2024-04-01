@@ -14,6 +14,7 @@ import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { LoginDto } from './dto/login.dto';
 import { IUser } from '../../database/types/User';
 
+@Public()
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
@@ -22,7 +23,6 @@ export class AuthController {
   @UsePipes(new ValidationPipe())
   @Post('login')
   @Header('Content-Type', 'application/json')
-  @Public()
   login(@Body() loginDto: LoginDto): Promise<JwtTokens> {
     return this.authService.login(loginDto);
   }
@@ -30,7 +30,6 @@ export class AuthController {
   @UsePipes(new ValidationPipe())
   @Post('signup')
   @Header('Content-Type', 'application/json')
-  @Public()
   signup(@Body() signupDto: LoginDto): Promise<Omit<IUser, 'password'>> {
     return this.authService.signup(signupDto);
   }
@@ -38,7 +37,6 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post('refresh')
   @Header('Content-Type', 'application/json')
-  @Public()
   refresh(@Body() refreshTokenDto: RefreshTokenDto): Promise<JwtTokens> {
     return this.authService.refresh(refreshTokenDto);
   }
