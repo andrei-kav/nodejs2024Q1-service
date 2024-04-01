@@ -29,7 +29,6 @@ export class AuthController {
     @HttpCode(HttpStatus.OK)
     @Post('refresh')
     @Header('Content-Type', 'application/json')
-    @Public()
     refresh(@Body() refreshTokenDto: RefreshTokenDto): Promise<JwtTokens> {
         return this.authService.refresh(refreshTokenDto);
     }
