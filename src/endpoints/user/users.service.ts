@@ -20,6 +20,10 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<Omit<IUser, 'password'>> {
+    const existing = await this.findByLogin(createUserDto.login)
+    if (existing) {
+      throw new ForbiddenException(`User ${createUserDto.login} already exists`)
+    }
     const hashed = await this.getHashedPassword(createUserDto.password)
     return payloadToPlain(await this.db.user.create({ data: {...createUserDto, password: hashed} }));
   }
@@ -34,7 +38,7 @@ export class UsersService {
   }
 
   async findAndValidate(loginDto: LoginDto): Promise<IUserPayload> {
-    const user = await this.db.user.findUnique({ where: { login: loginDto.login } });
+    const user = await this.findByLogin(loginDto.login)
     const isMatch = !!user && await this.validatePasswords(loginDto.password, user.password)
     if (!isMatch) {
       throw new ForbiddenException('login data is not correct')
@@ -68,6 +72,10 @@ export class UsersService {
     // get the user to be sure that it exists
     await this.getUserInfo(id);
     await this.db.user.delete({ where: { id } });
+  }
+
+  private async findByLogin(login: string): Promise<IUserPayload | null> {
+    return await this.db.user.findUnique({ where: { login: login } }) || null;
   }
 
   private async getUserInfo(id: string): Promise<IUserPayload> {

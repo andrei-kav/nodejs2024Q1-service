@@ -8,7 +8,6 @@ import {
 } from '@nestjs/common';
 import {UsersService} from "../user/users.service";
 import { JwtService } from '@nestjs/jwt';
-import * as bcrypt from 'bcrypt';
 import {CreateUserDto} from "../user/dto/create-user.dto";
 import {RefreshTokenDto} from "./dto/refresh-token.dto";
 import {LoginDto} from "./dto/login.dto";
