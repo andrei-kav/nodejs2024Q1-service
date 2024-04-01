@@ -23,7 +23,8 @@ export class CustomExceptionFilter implements ExceptionFilter {
 
     this.loggingService.error(
       exception,
-      exception instanceof Error ? exception.stack : '',
+      // log only message for the error
+      // exception instanceof Error ? exception.stack : '',
     );
 
     const isHttpException = exception instanceof HttpException;
