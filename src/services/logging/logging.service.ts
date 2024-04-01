@@ -16,7 +16,6 @@ const KiB = 1024;
 
 @Injectable()
 export class LoggingService extends ConsoleLogger implements LoggerService {
-  // private logLevel: Array<LogLevel>;
   private logFileSize: number;
   private logDir: string;
 
@@ -84,20 +83,7 @@ export class LoggingService extends ConsoleLogger implements LoggerService {
     const split = (
       this.configService.get('LOG_LEVEL')?.trim().split(' ') as Array<LogLevel>
     ).filter((value) => Object.values(LogLevel).includes(value));
-    // if (split?.length) {
-    //   this.logLevel = split;
-    //   return;
-    // }
-    // this.logLevel = split;
     this.setLogLevels(split)
-    // otherwise default value
-    // this.logLevel = [
-    //   LogLevel.LOG,
-    //   LogLevel.ERROR,
-    //   LogLevel.WARN,
-    //   LogLevel.DEBUG,
-    //   LogLevel.VERBOSE,
-    // ];
   }
 
   private saltFileName(fileName: string): string {
@@ -121,10 +107,6 @@ export class LoggingService extends ConsoleLogger implements LoggerService {
       }
     }
   }
-
-  // private needToRegister(level: LogLevel): boolean {
-  //   return this.logLevel.includes(level);
-  // }
 
   private logToFile(message: string) {
     let pathToFile = path.join(this.logDir, this.currentLogFile);
