@@ -224,12 +224,6 @@ paths:
         409:
           description: Conflict. Login already exists
   /user:
-    parameters:
-      - name: authorization
-        in: header
-        description: an authorization header
-        schema:
-          type: string
     get:
       tags:
         - User
@@ -281,11 +275,6 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
   /user/{userId}:
     parameters:
-      - name: authorization
-        in: header
-        description: an authorization header
-        schema:
-          type: string
       - name: userId
         in: path
         required: true
@@ -378,12 +367,6 @@ paths:
         404:
           description: User not found
   /track:
-    parameters:
-      - name: authorization
-        in: header
-        description: an authorization header
-        schema:
-          type: string
     get:
       tags:
         - Track
@@ -439,11 +422,6 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
   /track/{id}:
     parameters:
-      - name: authorization
-        in: header
-        description: an authorization header
-        schema:
-          type: string
       - name: id
         in: path
         required: true
@@ -547,12 +525,6 @@ paths:
         404:
           description: Track was not found.
   /album:
-    parameters:
-      - name: authorization
-        in: header
-        description: an authorization header
-        schema:
-          type: string
     get:
       tags:
         - Album
@@ -606,11 +578,6 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
   /album/{id}:
     parameters:
-      - name: authorization
-        in: header
-        description: an authorization header
-        schema:
-          type: string
       - name: id
         in: path
         required: true
@@ -687,12 +654,6 @@ paths:
         404:
           description: Album was not found.
   /artist:
-    parameters:
-      - name: authorization
-        in: header
-        description: an authorization header
-        schema:
-          type: string
     get:
       tags:
         - Artist
@@ -741,11 +702,6 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
   /artist/{id}:
     parameters:
-      - name: authorization
-        in: header
-        description: an authorization header
-        schema:
-          type: string
       - name: id
         in: path
         required: true
@@ -817,12 +773,6 @@ paths:
         404:
           description: Artist was not found.
   /favs:
-    parameters:
-      - name: authorization
-        in: header
-        description: an authorization header
-        schema:
-          type: string
     get:
       tags:
         - Favorites
@@ -839,11 +789,6 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
   /favs/track/{id}:
     parameters:
-      - name: authorization
-        in: header
-        description: an authorization header
-        schema:
-          type: string
       - name: id
         in: path
         required: true
@@ -880,11 +825,6 @@ paths:
           description: Track was not found.
   /favs/album/{id}:
     parameters:
-      - name: authorization
-        in: header
-        description: an authorization header
-        schema:
-          type: string
       - name: id
         in: path
         required: true
@@ -921,11 +861,6 @@ paths:
           description: Album was not found.
   /favs/artist/{id}:
     parameters:
-      - name: authorization
-        in: header
-        description: an authorization header
-        schema:
-          type: string
       - name: id
         in: path
         required: true
