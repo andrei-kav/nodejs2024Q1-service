@@ -79,6 +79,20 @@ Make sure you have docker scout plugin installed: https://docs.docker.com/scout/
 After starting the app on port (4000 as default) you can open
 in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
 
+## Logging
+This is the structure of nestjs log levels
+const LOG_LEVEL_VALUES: Record<LogLevel, number> = {
+  verbose: 0,
+  debug: 1,
+  log: 2,
+  warn: 3,
+  error: 4,
+  fatal: 5,
+};
+The greater index is, the more important. It means if you define only `warn` in .env file (LOG_LEVEL=`warn`),
+then `warn`, `error` and `fatal` will be logged.
+See [nest Logger](https://docs.nestjs.com/techniques/logger), [log levels implementation](https://github.com/nestjs/nest/blob/8b4dbb30909be86290d01da54205ab4bf081ab46/packages/common/services/utils/is-log-level-enabled.util.ts)
+
 ## Testing
 
 After application running open new terminal and enter:
