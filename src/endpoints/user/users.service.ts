@@ -8,13 +8,30 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { DatabaseService } from '../../database/database.service';
 import { IUser, IUserPayload } from '../../database/types/User';
 import { payloadToPlain } from './entities/user.entity';
+import * as bcrypt from 'bcrypt';
+import { ConfigService } from '@nestjs/config';
+import { LoginDto } from '../auth/dto/login.dto';
 
 @Injectable()
 export class UsersService {
-  constructor(private db: DatabaseService) {}
+  constructor(
+    private db: DatabaseService,
+    private configService: ConfigService,
+  ) {}
 
   async create(createUserDto: CreateUserDto): Promise<Omit<IUser, 'password'>> {
-    return payloadToPlain(await this.db.user.create({ data: createUserDto }));
+    const existing = await this.findByLogin(createUserDto.login);
+    if (existing) {
+      throw new ForbiddenException(
+        `User ${createUserDto.login} already exists`,
+      );
+    }
+    const hashed = await this.getHashedPassword(createUserDto.password);
+    return payloadToPlain(
+      await this.db.user.create({
+        data: { ...createUserDto, password: hashed },
+      }),
+    );
   }
 
   async findAll(): Promise<Array<Omit<IUser, 'password'>>> {
@@ -22,13 +39,19 @@ export class UsersService {
   }
 
   async findOne(id: string): Promise<Omit<IUser, 'password'>> {
-    const user = await this.db.user.findUnique({ where: { id } });
-
-    if (!user) {
-      throw new NotFoundException(`user with id ${id} does not seem to exist`);
-    }
-
+    const user = await this.getUserInfo(id);
     return payloadToPlain(user);
+  }
+
+  async findAndValidate(loginDto: LoginDto): Promise<IUserPayload> {
+    const user = await this.findByLogin(loginDto.login);
+    const isMatch =
+      !!user &&
+      (await this.validatePasswords(loginDto.password, user.password));
+    if (!isMatch) {
+      throw new ForbiddenException('login data is not correct');
+    }
+    return user;
   }
 
   async update(
@@ -37,7 +60,11 @@ export class UsersService {
   ): Promise<Omit<IUser, 'password'>> {
     const user = await this.getUserInfo(id);
 
-    if (user.password !== updateUserDto.oldPassword) {
+    const isMatch = await this.validatePasswords(
+      updateUserDto.oldPassword,
+      user.password,
+    );
+    if (!isMatch) {
       throw new ForbiddenException(`old password is wrong`);
     }
 
@@ -58,11 +85,27 @@ export class UsersService {
     await this.db.user.delete({ where: { id } });
   }
 
+  private async findByLogin(login: string): Promise<IUserPayload | null> {
+    return (await this.db.user.findUnique({ where: { login: login } })) || null;
+  }
+
   private async getUserInfo(id: string): Promise<IUserPayload> {
     const user = await this.db.user.findUnique({ where: { id } });
     if (!user) {
       throw new NotFoundException(`user with id ${id} does not seem to exist`);
     }
     return user;
+  }
+
+  private async getHashedPassword(password: string): Promise<string> {
+    const salt = this.configService.get('CRYPT_SALT');
+    return await bcrypt.hash(password, Number(salt));
+  }
+
+  private async validatePasswords(
+    loginPassword: string,
+    existingPassword: string,
+  ): Promise<boolean> {
+    return await bcrypt.compare(loginPassword, existingPassword);
   }
 }
